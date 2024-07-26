@@ -1,9 +1,6 @@
 package com.lihui.user_center_back.model.domain;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -11,9 +8,10 @@ import java.util.Date;
 
 /**
  * 用户
+ *
  * @TableName user
  */
-@TableName(value ="user")
+@TableName(value = "user")
 @Data
 public class User implements Serializable {
     /**
@@ -75,7 +73,7 @@ public class User implements Serializable {
     /**
      * 是否删除
      */
-
+    @TableLogic
     private Integer isDelete;
 
     @TableField(exist = false)
