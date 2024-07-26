@@ -14,7 +14,6 @@ import javax.annotation.Resource;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.sun.javafx.font.FontResource.SALT;
 
 /**
  * @author lihui
@@ -32,25 +31,25 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
     @Override
     public long userRegister(String userAccount, String userPassword, String checkPassword) {
-        //1，校验
-        //非空
+        // 1. 校验
+        // 非空
         if (StringUtils.isAnyBlank(userAccount, userPassword, checkPassword)) {
             return -1;
         }
-        //账户的话不小于4位，密码不小于8位
+        // 账户长度不小于4位，密码长度不小于8位
         if (userAccount.length() < 4) {
             return -1;
         }
         if (userPassword.length() < 8 || checkPassword.length() < 8) {
             return -1;
         }
-        //账户不能包含特殊字符(放在账户不能重复之前，省去一次数据库查询的资源浪费)
-        String validPattern = "[~!@#$%^&*()+=|{}':;',\\[\\].<>/?~！@#￥%……&*（）——+|{}【】‘；：”“’。，、？]";
+        // 账户不能包含特殊字符
+        String validPattern = "\\W";
         Matcher matcher = Pattern.compile(validPattern).matcher(userAccount);
-        if (!matcher.find()) {
+        if (matcher.find()) { // 不要写反
             return -1;
         }
-        //账户不能重复
+        // 账户不能重复
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("userAccount", userAccount);
         long count = userMapper.selectCount(queryWrapper);
@@ -58,14 +57,15 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             return -1;
         }
 
-        //密码校验密码相同
+        // 密码校验
         if (!userPassword.equals(checkPassword)) {
             return -1;
         }
 
-        //2.加密
+        // 2. 加密
+        final String SALT = "lihui";
         String encryptPassword = DigestUtils.md5DigestAsHex((SALT + userPassword).getBytes());
-        //3.插入数据
+        // 3. 插入数据
         User user = new User();
         user.setUserAccount(userAccount);
         user.setUserPassword(encryptPassword);
@@ -75,6 +75,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         }
         return user.getId();
     }
+
 
 }
 
