@@ -90,7 +90,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     }
 
     @Override
-    public User doLogin(String userAccount, String userPassword, HttpServletRequest request) {
+    public User userLogin(String userAccount, String userPassword, HttpServletRequest request) {
         //todo 修改自定义异常
 
         // 1. 校验

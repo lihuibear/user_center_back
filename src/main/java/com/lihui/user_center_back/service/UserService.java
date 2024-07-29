@@ -35,6 +35,6 @@ public interface UserService extends IService<User> {
      * @return 脱敏后的用户信息
      */
 
-    User doLogin(String userAccount, String userPassword, HttpServletRequest request);
+    User userLogin(String userAccount, String userPassword, HttpServletRequest request);
 
 }
