@@ -1,17 +1,21 @@
 package com.lihui.user_center_back.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.lihui.user_center_back.model.domain.User;
 import com.lihui.user_center_back.model.domain.request.UserLoginRequest;
 import com.lihui.user_center_back.model.domain.request.UserRegistRequest;
 import com.lihui.user_center_back.service.UserService;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static com.lihui.user_center_back.contant.UserContant.ADMIN_ROLE;
+import static com.lihui.user_center_back.contant.UserContant.USER_LOGIN_STATE;
 
 /**
  * 用户接口
@@ -38,12 +42,12 @@ public class UserController {
         if (StringUtils.isAnyBlank(userAccount, userPassword, checkPassword)) {
             return null;
         }
-        return userService.userRegister(userAccount,userPassword,checkPassword);
+        return userService.userRegister(userAccount, userPassword, checkPassword);
 
     }
 
     @PostMapping("/login")
-    public User userLogin(@RequestBody UserLoginRequest userLoginRequest, HttpServletRequest request)  {
+    public User userLogin(@RequestBody UserLoginRequest userLoginRequest, HttpServletRequest request) {
         if (userLoginRequest == null) {
             return null;
         }
@@ -52,7 +56,70 @@ public class UserController {
         if (StringUtils.isAnyBlank(userAccount, userPassword)) {
             return null;
         }
-        return userService.userLogin(userAccount,userPassword,request);
+        return userService.userLogin(userAccount, userPassword, request);
 
     }
+
+    /**
+     * POST http://localhost:7070/user/login
+     * Content-Type: application/json
+     * <p>
+     * {
+     * "userAccount": "lihui11",
+     * "userPassword": "12345678"
+     * }
+     **/
+    @GetMapping("/search")
+
+    public List<User> searchUsers(String username, HttpServletRequest request) {
+//        //鉴权 仅管理员可见
+//        Object userObj = request.getSession().getAttribute(USER_LOGIN_STATE);
+//        User user = (User) userObj;
+//        if (user == null || user.getRole() != ADMIN_ROLE) { //用常量替换
+//            return new ArrayList<>();
+//        }
+        if (!isAdmin(request)) {
+            return new ArrayList<>();
+        }
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        if (StringUtils.isNoneBlank(username)) {
+            queryWrapper.like("username", username);
+        }
+        List<User> userlist = userService.list(queryWrapper);
+        return userlist.stream().map(user -> userService.getSafetyUser(user)).collect(Collectors.toList());
+    }
+
+    @PostMapping("/delete")
+    public boolean deleteUsers(@RequestBody long id, HttpServletRequest request) {
+//        //鉴权 仅管理员可见
+//        Object userObj = request.getSession().getAttribute(USER_LOGIN_STATE);
+//        User user = (User) userObj;
+//        if (user == null || user.getRole() != ADMIN_ROLE) { //用常量替换
+//            return false;
+//        }
+        if (!isAdmin(request)) {
+            return false;
+        }
+        if (id <= 0) {
+            return false;
+        }
+        return userService.removeById(id);
+    }
+
+    /**
+     * * 鉴权 仅管理员可见
+     *
+     * @param request
+     * @return
+     */
+    private boolean isAdmin(HttpServletRequest request) {
+        //鉴权 仅管理员可见
+        Object userObj = request.getSession().getAttribute(USER_LOGIN_STATE);
+        User user = (User) userObj;
+        if (user == null || user.getUserRole() != ADMIN_ROLE) { //用常量替换
+            return false;
+        }
+        return true;
+    }
+
 }

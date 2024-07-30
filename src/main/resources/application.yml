@@ -6,9 +6,11 @@ spring:
     url: jdbc:mysql://101.132.114.12:3306/lihui
     username: lihui
     password: 123456
+    #session 失效时间 （1天）
+  session:
+    timeout: 86400
 server:
-  port: 8080
-
+  port: 7070
 mybatis-plus:
   global-config:
     db-config:

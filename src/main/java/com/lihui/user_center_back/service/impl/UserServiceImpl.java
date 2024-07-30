@@ -1,7 +1,5 @@
 package com.lihui.user_center_back.service.impl;
 
-import java.util.Date;
-
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lihui.user_center_back.model.domain.User;
@@ -17,6 +15,8 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static com.lihui.user_center_back.contant.UserContant.USER_LOGIN_STATE;
 
 
 /**
@@ -37,10 +37,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
      * 加盐混淆密码
      */
     final static String SALT = "lihui"; //加盐
-    /**
-     * 用户登录态的key
-     */
-    final static String USER_LOGIN_STATE = "userLoginState";
+//    /**
+//     * 用户登录态的key
+//     */
+//    public static String USER_LOGIN_STATE = "userLoginState";
 
     @Override
     public long userRegister(String userAccount, String userPassword, String checkPassword) {
@@ -123,22 +123,48 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             return null;
         }
         //3.用户脱敏
-        User safeUser = new User();
-        safeUser.setId(user.getId());
-        safeUser.setUsername(user.getUsername());
-        safeUser.setUserAccount(user.getUserAccount());
-        safeUser.setAvatarUrl(user.getAvatarUrl());
-        safeUser.setGender(user.getGender());
-        safeUser.setPhone(user.getPhone());
-        safeUser.setEmail(user.getEmail());
-        safeUser.setUserStatus(user.getUserStatus());
-        safeUser.setCreateTime(user.getCreateTime());
-        safeUser.setIsDelete(0);
+//        User safeUser = new User();
+//        safeUser.setId(user.getId());
+//        safeUser.setUsername(user.getUsername());
+//        safeUser.setUserAccount(user.getUserAccount());
+//        safeUser.setAvatarUrl(user.getAvatarUrl());
+//        safeUser.setGender(user.getGender());
+//        safeUser.setPhone(user.getPhone());
+//        safeUser.setEmail(user.getEmail());
+//        safeUser.setUserRole(user.getUserRole());
+//        safeUser.setUserStatus(user.getUserStatus());
+//        safeUser.setCreateTime(user.getCreateTime());
+//        safeUser.setIsDelete(0);
 
+        User safeUser = getSafetyUser(user);
 
         //4.记录用户的登录态
         request.getSession().setAttribute(USER_LOGIN_STATE, safeUser);
         return safeUser;
+    }
+
+    /**
+     * 用户脱敏
+     *
+     * @param originUser
+     * @return
+     */
+    @Override
+    public User getSafetyUser(User originUser) {
+        User safeUser = new User();
+        safeUser.setId(originUser.getId());
+        safeUser.setUsername(originUser.getUsername());
+        safeUser.setUserAccount(originUser.getUserAccount());
+        safeUser.setAvatarUrl(originUser.getAvatarUrl());
+        safeUser.setGender(originUser.getGender());
+        safeUser.setPhone(originUser.getPhone());
+        safeUser.setEmail(originUser.getEmail());
+        safeUser.setUserRole(originUser.getUserRole());
+        safeUser.setUserStatus(originUser.getUserStatus());
+        safeUser.setCreateTime(originUser.getCreateTime());
+        safeUser.setIsDelete(0);
+        return safeUser;
+
     }
 
 
