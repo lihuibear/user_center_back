@@ -60,6 +60,21 @@ public class UserController {
 
     }
 
+    @GetMapping("current")
+    public User getLoginUser(HttpServletRequest request) {
+        Object userObj = request.getSession().getAttribute(USER_LOGIN_STATE);
+        User currentUser = (User) userObj;
+        if (currentUser == null) {
+            return null;
+        }
+        long userId = currentUser.getId();
+        User user = userService.getById(userId);
+        //todo 校验用户是否合法
+
+        return userService.getSafetyUser(user);
+
+    }
+
     /**
      * POST http://localhost:7070/user/login
      * Content-Type: application/json
@@ -121,5 +136,6 @@ public class UserController {
         }
         return true;
     }
+
 
 }
