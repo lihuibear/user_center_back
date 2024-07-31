@@ -170,6 +170,20 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
     }
 
+    /**
+     * 用户注销
+     *
+     * @param request
+     * @return
+     */
+
+    @Override
+    public int userLogout(HttpServletRequest request) {
+        //移除登录
+        request.getSession().removeAttribute(USER_LOGIN_STATE);
+        return 1;
+    }
+
 
 }
 
