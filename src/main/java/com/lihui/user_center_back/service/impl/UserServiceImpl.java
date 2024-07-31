@@ -43,10 +43,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 //    public static String USER_LOGIN_STATE = "userLoginState";
 
     @Override
-    public long userRegister(String userAccount, String userPassword, String checkPassword) {
+    public long userRegister(String userAccount, String userPassword, String checkPassword, String planetCode) {
         // 1. 校验
         // 非空
-        if (StringUtils.isAnyBlank(userAccount, userPassword, checkPassword)) {
+        if (StringUtils.isAnyBlank(userAccount, userPassword, checkPassword, planetCode)) {
             return -1;
         }
         // 账户长度不小于4位，密码长度不小于8位
@@ -54,6 +54,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             return -1;
         }
         if (userPassword.length() < 8 || checkPassword.length() < 8) {
+            return -1;
+        }
+        if (planetCode.length() > 5) {
             return -1;
         }
         // 账户不能包含特殊字符
@@ -66,6 +69,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("userAccount", userAccount);
         long count = userMapper.selectCount(queryWrapper);
+        if (count > 0) {
+            return -1;
+        }
+
+        // 星球编号不重复
+        queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("planetCode", planetCode);
+        count = userMapper.selectCount(queryWrapper);
         if (count > 0) {
             return -1;
         }
@@ -162,6 +173,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         safeUser.setGender(originUser.getGender());
         safeUser.setPhone(originUser.getPhone());
         safeUser.setEmail(originUser.getEmail());
+        safeUser.setPlanetCode(originUser.getPlanetCode());
         safeUser.setUserRole(originUser.getUserRole());
         safeUser.setUserStatus(originUser.getUserStatus());
         safeUser.setCreateTime(originUser.getCreateTime());

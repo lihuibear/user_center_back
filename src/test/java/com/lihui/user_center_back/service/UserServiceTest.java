@@ -41,7 +41,8 @@ class UserServiceTest {
         String userAccount = "lihui1";
         String userPassword = "";
         String checkPassword = "12345678";
-        long result = userService.userRegister(userAccount, userPassword, checkPassword);
+        String planetCode = "1";
+        long result = userService.userRegister(userAccount, userPassword, checkPassword,planetCode);
 
         Assertions.assertEquals(-1, result);//断言
 
@@ -50,31 +51,31 @@ class UserServiceTest {
         userAccount = "li";
         userPassword = "";
         checkPassword = "12345678";
-        result = userService.userRegister(userAccount, userPassword, checkPassword);
+        result = userService.userRegister(userAccount, userPassword, checkPassword,planetCode);
 
         Assertions.assertEquals(-1, result);//断言
         //密码小于8位
         userAccount = "lihui11";
         userPassword = "123456";
         checkPassword = "123456";
-        result = userService.userRegister(userAccount, userPassword, checkPassword);
+        result = userService.userRegister(userAccount, userPassword, checkPassword,planetCode);
 
         Assertions.assertEquals(-1, result);//断言
         //密码校验密码不同
         userPassword = "12345678";
         checkPassword = "123456789";
-        result = userService.userRegister(userAccount, userPassword, checkPassword);
+        result = userService.userRegister(userAccount, userPassword, checkPassword,planetCode);
         //用户名相同
         userAccount = "lihui11";
         userPassword = "123456789";
-        result = userService.userRegister(userAccount, userPassword, checkPassword);
+        result = userService.userRegister(userAccount, userPassword, checkPassword,planetCode);
 
         Assertions.assertEquals(-1, result);//断言
         //正常注册
         userAccount = "yupi";
         userPassword = "12345678";
         checkPassword = "12345678";
-        result = userService.userRegister(userAccount, userPassword, checkPassword);
+        result = userService.userRegister(userAccount, userPassword, checkPassword,planetCode);
         Assertions.assertTrue(result > 0);//断言
     }
 
