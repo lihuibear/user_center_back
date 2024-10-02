@@ -21,13 +21,14 @@ class UserServiceTest {
     public void testAddUser() {
         User user = new User();
 
-        user.setUsername("lihui11");
-        user.setUserAccount("lihui11");
+        user.setUsername("lihui1122");
+        user.setUserAccount("lihui1122");
         user.setAvatarUrl("https://blog-1319612571.cos.ap-shanghai.myqcloud.com/public/images/avatar.jpg");
         user.setGender(0);
         user.setUserPassword("12345678");
         user.setPhone("111");
         user.setEmail("222");
+        user.setPlanetCode("15");
         boolean result = userService.save(user);
 
         System.out.println(user.getId());
