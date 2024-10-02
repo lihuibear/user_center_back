@@ -2,6 +2,8 @@ package com.lihui.user_center_back.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.lihui.user_center_back.common.ErrorCode;
+import com.lihui.user_center_back.exception.BusinessException;
 import com.lihui.user_center_back.model.domain.User;
 import com.lihui.user_center_back.service.UserService;
 
@@ -47,17 +49,17 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         // 1. 校验
         // 非空
         if (StringUtils.isAnyBlank(userAccount, userPassword, checkPassword, planetCode)) {
-            return -1;
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "参数为空");
         }
         // 账户长度不小于4位，密码长度不小于8位
         if (userAccount.length() < 4) {
-            return -1;
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "用户账号过短");
         }
         if (userPassword.length() < 8 || checkPassword.length() < 8) {
-            return -1;
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "用户密码过短");
         }
         if (planetCode.length() > 5) {
-            return -1;
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "星球编号过长");
         }
         // 账户不能包含特殊字符
         String validPattern = "\\W";
@@ -70,7 +72,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         queryWrapper.eq("userAccount", userAccount);
         long count = userMapper.selectCount(queryWrapper);
         if (count > 0) {
-            return -1;
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "账号重复");
         }
 
         // 星球编号不重复
@@ -78,14 +80,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         queryWrapper.eq("planetCode", planetCode);
         count = userMapper.selectCount(queryWrapper);
         if (count > 0) {
-            return -1;
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "编号重复");
         }
 
         // 密码校验
         if (!userPassword.equals(checkPassword)) {
             return -1;
         }
-
         // 2. 加密
 //        final String SALT = "lihui";
         String encryptPassword = DigestUtils.md5DigestAsHex((SALT + userPassword).getBytes());
