@@ -31,18 +31,17 @@ import static com.lihui.user_center_back.contant.UserContant.USER_LOGIN_STATE;
  */
 @Service
 @Slf4j
-public class UserServiceImpl extends ServiceImpl<UserMapper, User>
-        implements UserService {
+public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
     @Resource
     private UserMapper userMapper;
     /**
      * 加盐混淆密码
      */
     final static String SALT = "lihui"; //加盐
-//    /**
-//     * 用户登录态的key
-//     */
-//    public static String USER_LOGIN_STATE = "userLoginState";
+    //    /**
+    //     * 用户登录态的key
+    //     */
+    //    public static String USER_LOGIN_STATE = "userLoginState";
 
     @Override
     public long userRegister(String userAccount, String userPassword, String checkPassword, String planetCode) {
@@ -191,7 +190,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
      * @param request
      * @return
      */
-
     @Override
     public int userLogout(HttpServletRequest request) {
         //移除登录
