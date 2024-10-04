@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: user_center_back
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://47.237.103.108:3306/user_center
+    username: user_center
+    password: N6fkD25XzhLRkJLb
+    #session 失效时间 （1天）
+  session:
+    timeout: 86400
+
