@@ -10,3 +10,4 @@ spring:
   session:
     timeout: 86400
 
+
